@@ -5,18 +5,25 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import oxahex.asker.server.error.handler.AuthenticationExceptionHandler;
 import oxahex.asker.server.error.handler.AuthorizationExceptionHandler;
+import oxahex.asker.server.security.AuthenticationFilter;
+import oxahex.asker.server.security.AuthorizationFilter;
+import oxahex.asker.server.service.AuthService;
 
 @Slf4j
 @Configuration
@@ -25,7 +32,10 @@ import oxahex.asker.server.error.handler.AuthorizationExceptionHandler;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+	private static final String LOGIN_PATH = "/api/auth/login";
+	private final PasswordEncoder passwordEncoder;
 	private final ObjectMapper objectMapper;
+	private final AuthService authService;
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -47,6 +57,8 @@ public class SecurityConfig {
 				});
 
 		// 인증, 인가 처리 필터 등록
+		http.addFilter(authenticationFilter());  // 이메일 패스워드 기반 인증 처리
+		http.addFilterBefore(authorizationFilter(), AuthenticationFilter.class);  // JWT 토큰 기반 인가 처리
 
 		// Security Filter 내 기본 예외 처리
 		http
@@ -74,5 +86,27 @@ public class SecurityConfig {
 		source.registerCorsConfiguration("**", configuration);
 
 		return source;
+	}
+
+	@Bean
+	public AuthenticationManager authenticationManager() {
+		log.info("[AuthenticationManager 빈 등록]");
+		DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+		provider.setUserDetailsService(authService);
+		provider.setPasswordEncoder(passwordEncoder);
+		return new ProviderManager(provider);
+	}
+
+	@Bean
+	public AuthenticationFilter authenticationFilter() {
+		AuthenticationFilter filter = new AuthenticationFilter(objectMapper);
+		filter.setFilterProcessesUrl(LOGIN_PATH);
+		filter.setAuthenticationManager(authenticationManager());
+		return filter;
+	}
+
+	@Bean
+	public AuthorizationFilter authorizationFilter() {
+		return new AuthorizationFilter(objectMapper);
 	}
 }
