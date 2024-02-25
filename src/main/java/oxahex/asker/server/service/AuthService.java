@@ -26,6 +26,8 @@ public class AuthService implements UserDetailsService {
 		User user = userRepository.findByEmail(username)
 				.orElseThrow(() -> new AuthException(ErrorType.AUTHENTICATION_FAILURE));
 
+		// TODO: 토큰 발급 여기에서
+
 		return new AuthUser(user);
 	}
 }
