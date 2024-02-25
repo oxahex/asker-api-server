@@ -9,7 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import oxahex.asker.server.domain.user.User;
+import oxahex.asker.server.error.AuthException;
 import oxahex.asker.server.security.AuthUser;
+import oxahex.asker.server.type.ErrorType;
 import oxahex.asker.server.type.JwtTokenType;
 import oxahex.asker.server.type.RoleType;
 
@@ -60,6 +62,9 @@ public class JwtTokenService {
 		DecodedJWT decodedJWT =
 				JWT.require(Algorithm.HMAC256(JWT_TOKEN_KEY)).build().verify(token);
 
+		// 만료된 토큰
+		isExpiredToken(decodedJWT);
+
 		Long id = decodedJWT.getClaim(KEY_ID).asLong();
 		String email = decodedJWT.getSubject();
 		String role = decodedJWT.getClaim(KEY_ROLE).asString();
@@ -73,6 +78,12 @@ public class JwtTokenService {
 		log.info("[토큰 검증 완료][id={}][email={}][role={}]", id, email, role);
 
 		return new AuthUser(user);
+	}
+
+	private static void isExpiredToken(DecodedJWT token) {
+		if (token.getExpiresAt().before(new Date(System.currentTimeMillis()))) {
+			throw new AuthException(ErrorType.TOKEN_EXPIRED);
+		}
 	}
 
 	/**
