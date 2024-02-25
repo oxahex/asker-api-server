@@ -1,5 +1,6 @@
 package oxahex.asker.server.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -14,6 +15,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import oxahex.asker.server.error.handler.AuthenticationExceptionHandler;
+import oxahex.asker.server.error.handler.AuthorizationExceptionHandler;
 
 @Slf4j
 @Configuration
@@ -21,6 +24,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+
+	private final ObjectMapper objectMapper;
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -44,6 +49,13 @@ public class SecurityConfig {
 		// 인증, 인가 처리 필터 등록
 
 		// Security Filter 내 기본 예외 처리
+		http
+				.exceptionHandling(exceptionHandler -> {
+					exceptionHandler.authenticationEntryPoint(
+							new AuthenticationExceptionHandler(objectMapper));  // 인증 실패(401)
+					exceptionHandler.accessDeniedHandler(
+							new AuthorizationExceptionHandler(objectMapper));    // 인가 실패(403)
+				});
 
 		return http.build();
 	}
