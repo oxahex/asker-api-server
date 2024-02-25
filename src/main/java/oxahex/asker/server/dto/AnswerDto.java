@@ -7,8 +7,11 @@ import jakarta.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.domain.Page;
 import oxahex.asker.server.domain.answer.Answer;
+import oxahex.asker.server.domain.user.User;
 import oxahex.asker.server.dto.AskDto.AskInfoDto;
+import oxahex.asker.server.dto.UserDto.UserInfoDto;
 
 public class AnswerDto {
 
@@ -43,6 +46,23 @@ public class AnswerDto {
 			answerInfo.setCreatedAt(answer.getCreatedAt());
 
 			return answerInfo;
+		}
+	}
+
+	@Getter
+	@Setter
+	public static class AnswerListDto {
+
+		private UserInfoDto answerUser;
+		private Page<AnswerInfoDto> answers;
+
+		public static AnswerListDto of(User user, Page<Answer> answers) {
+
+			AnswerListDto postedAnswers = new AnswerListDto();
+			postedAnswers.setAnswerUser(UserInfoDto.of(user));
+			postedAnswers.setAnswers(answers.map(AnswerInfoDto::of));
+
+			return postedAnswers;
 		}
 	}
 }
