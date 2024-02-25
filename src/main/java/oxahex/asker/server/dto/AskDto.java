@@ -30,14 +30,14 @@ public class AskDto {
 
 		private Long askId;
 		private String contents;
-		private LocalDateTime createdDate;
+		private LocalDateTime createdAt;
 
 		public static AskInfoDto of(Ask ask) {
 
 			AskInfoDto askInfo = new AskInfoDto();
 			askInfo.setAskId(ask.getId());
 			askInfo.setContents(ask.getContents());
-			askInfo.setCreatedDate(ask.getCreatedAt());
+			askInfo.setCreatedAt(ask.getCreatedAt());
 
 			return askInfo;
 		}

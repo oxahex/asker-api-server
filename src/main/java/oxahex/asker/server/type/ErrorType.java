@@ -17,7 +17,10 @@ public enum ErrorType {
 	EMAIL_CONFLICT(HttpStatus.CONFLICT, "이미 존재하는 이메일입니다."),
 
 	// 유저
-	USER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 유저입니다.");
+	USER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 유저입니다."),
+
+	// 답변
+	ASK_FORBIDDEN(HttpStatus.FORBIDDEN, "답변 권한이 없습니다.");
 
 	private final HttpStatus httpStatus;
 	private final String errorMessage;
