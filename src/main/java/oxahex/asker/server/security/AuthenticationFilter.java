@@ -13,7 +13,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import oxahex.asker.server.cache.RedisRepository;
 import oxahex.asker.server.dto.LoginDto.LoginReqDto;
 import oxahex.asker.server.dto.LoginDto.LoginResDto;
 import oxahex.asker.server.error.AuthException;
@@ -26,7 +25,6 @@ import oxahex.asker.server.utils.ResponseUtil;
 @RequiredArgsConstructor
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-	private final RedisRepository redisRepository;
 	private final ObjectMapper objectMapper;
 
 	@Override
