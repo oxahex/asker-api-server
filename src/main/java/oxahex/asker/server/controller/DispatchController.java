@@ -39,7 +39,7 @@ public class DispatchController {
 			@AuthenticationPrincipal AuthUser authUser
 	) {
 
-		log.info("[질문하기][email={}]", authUser.getUsername());
+		log.info("[질문하기]");
 
 		AskInfoDto askInfoDto = dispatchService.dispatchAsk(authUser, askReqDto);
 
