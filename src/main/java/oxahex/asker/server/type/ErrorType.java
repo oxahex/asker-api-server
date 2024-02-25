@@ -13,8 +13,11 @@ public enum ErrorType {
 	AUTHORIZATION_FAILURE(HttpStatus.FORBIDDEN, "권한이 없습니다."),
 	TOKEN_EXPIRED(HttpStatus.BAD_REQUEST, "만료된 토큰입니다."),
 
-	// 중복
-	EMAIL_CONFLICT(HttpStatus.CONFLICT, "이미 존재하는 이메일입니다.");
+	// 이메일
+	EMAIL_CONFLICT(HttpStatus.CONFLICT, "이미 존재하는 이메일입니다."),
+
+	// 유저
+	USER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 유저입니다.");
 
 	private final HttpStatus httpStatus;
 	private final String errorMessage;
