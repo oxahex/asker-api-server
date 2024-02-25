@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import oxahex.asker.server.dto.AnswerDto.AnswerInfoDto;
+import oxahex.asker.server.dto.AnswerDto.AnswerReqDto;
 import oxahex.asker.server.dto.AskDto.AskInfoDto;
 import oxahex.asker.server.dto.AskDto.AskReqDto;
 import oxahex.asker.server.dto.ResponseDto;
@@ -45,6 +47,30 @@ public class DispatchController {
 
 		return new ResponseEntity<>(
 				new ResponseDto<>("성공적으로 질문했습니다.", askInfoDto),
+				HttpStatus.CREATED
+		);
+	}
+
+	/**
+	 * 특정 질문에 답변하기
+	 *
+	 * @param answerReqDto 답변 생성 요청 Body
+	 * @param authUser     로그인 유저
+	 * @return 생성한 답변 및 질문 정보 응답
+	 */
+	@PostMapping("/answer")
+	@PreAuthorize("hasAuthority('USER')")
+	public ResponseEntity<ResponseDto<AnswerInfoDto>> dispatchAnswer(
+			@RequestBody @Valid AnswerReqDto answerReqDto,
+			@AuthenticationPrincipal AuthUser authUser
+	) {
+
+		log.info("[답변하기]");
+
+		AnswerInfoDto answerInfoDto = dispatchService.dispatchAnswer(authUser, answerReqDto);
+
+		return new ResponseEntity<>(
+				new ResponseDto<>("성공적으로 답변했습니다.", answerInfoDto),
 				HttpStatus.CREATED
 		);
 	}
