@@ -1,4 +1,4 @@
-package oxahex.asker.server.repository;
+package oxahex.asker.server.cache;
 
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
