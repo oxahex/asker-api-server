@@ -1,0 +1,9 @@
+spring:
+  profiles:
+    group:
+      develop:
+        - dev
+      production:
+        - prod
+
+    active: develop
