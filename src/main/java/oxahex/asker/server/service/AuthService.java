@@ -1,5 +1,6 @@
 package oxahex.asker.server.service;
 
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -7,14 +8,18 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import oxahex.asker.server.cache.RedisRepository;
 import oxahex.asker.server.domain.user.User;
 import oxahex.asker.server.domain.user.UserRepository;
 import oxahex.asker.server.dto.JoinDto.JoinReqDto;
 import oxahex.asker.server.dto.JoinDto.JoinResDto;
+import oxahex.asker.server.dto.TokenDto;
 import oxahex.asker.server.error.AuthException;
 import oxahex.asker.server.error.ServiceException;
 import oxahex.asker.server.security.AuthUser;
 import oxahex.asker.server.type.ErrorType;
+import oxahex.asker.server.type.JwtTokenType;
+import oxahex.asker.server.type.RedisType;
 import oxahex.asker.server.type.RoleType;
 
 @Slf4j
@@ -23,6 +28,7 @@ import oxahex.asker.server.type.RoleType;
 public class AuthService implements UserDetailsService {
 
 	private final UserRepository userRepository;
+	private final RedisRepository redisRepository;
 	private final PasswordEncoder passwordEncoder;
 
 	@Override
@@ -62,6 +68,42 @@ public class AuthService implements UserDetailsService {
 		return new JoinResDto(user);
 	}
 
+	/**
+	 * JWT Access Token 재발급
+	 *
+	 * @param authUser     로그인 유저
+	 * @param refreshToken Refresh Token
+	 * @return Access Token
+	 */
+	public TokenDto reIssueAccessToken(
+			AuthUser authUser,
+			String refreshToken
+	) {
+
+		String userEmail = authUser.getUsername();
+		String cachedToken = redisRepository.get(RedisType.REFRESH_TOKEN, userEmail);
+
+		// 캐시되지 않은 경우 RDB에서 Refresh Token 획득
+		String savedToken = cachedToken == null
+				? userRepository.findRefreshToken(userEmail)
+				: cachedToken;
+
+		// 서버 측에 저장된 토큰과 동일한지 확인
+		if (!Objects.equals(refreshToken, cachedToken)) {
+			throw new ServiceException(ErrorType.TOKEN_REISSUE_FAILURE);
+		}
+
+		// Access Token 재발급
+		String reissuedToken = JwtTokenService.create(authUser, JwtTokenType.ACCESS_TOKEN);
+
+		return new TokenDto(reissuedToken, savedToken);
+	}
+
+	/**
+	 * 이메일 중복 검증
+	 *
+	 * @param email 검증할 이메일
+	 */
 	private void validateEmail(String email) {
 		if (userRepository.existsByEmail(email)) {
 			throw new ServiceException(ErrorType.EMAIL_CONFLICT);
