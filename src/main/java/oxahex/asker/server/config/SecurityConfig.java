@@ -19,6 +19,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import oxahex.asker.server.cache.RedisRepository;
 import oxahex.asker.server.error.handler.AuthenticationExceptionHandler;
 import oxahex.asker.server.error.handler.AuthorizationExceptionHandler;
 import oxahex.asker.server.security.AuthenticationFilter;
@@ -36,6 +37,7 @@ public class SecurityConfig {
 	private final PasswordEncoder passwordEncoder;
 	private final ObjectMapper objectMapper;
 	private final AuthService authService;
+	private final RedisRepository redisRepository;
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -99,7 +101,7 @@ public class SecurityConfig {
 
 	@Bean
 	public AuthenticationFilter authenticationFilter() {
-		AuthenticationFilter filter = new AuthenticationFilter(objectMapper);
+		AuthenticationFilter filter = new AuthenticationFilter(objectMapper, redisRepository);
 		filter.setFilterProcessesUrl(LOGIN_PATH);
 		filter.setAuthenticationManager(authenticationManager());
 		return filter;

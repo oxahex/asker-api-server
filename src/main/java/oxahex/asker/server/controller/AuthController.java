@@ -21,7 +21,6 @@ import oxahex.asker.server.service.AuthService;
 
 @Slf4j
 @RestController
-@PreAuthorize("permitAll()")
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
@@ -37,6 +36,7 @@ public class AuthController {
 	 * @return 회원가입 유저 정보
 	 */
 	@PostMapping("/join")
+	@PreAuthorize("permitAll()")
 	public ResponseEntity<ResponseDto<JoinResDto>> joinWithEmail(
 			@RequestBody @Valid JoinReqDto joinReqDto
 	) {
@@ -60,6 +60,7 @@ public class AuthController {
 	 * @return JWT Access Token
 	 */
 	@PostMapping(path = "/token", headers = HEADER)
+	@PreAuthorize("hasAuthority('USER')")
 	public ResponseEntity<ResponseDto<TokenDto>> reIssueAccessToken(
 			@RequestHeader(HEADER) String refreshToken,
 			@AuthenticationPrincipal AuthUser authUser

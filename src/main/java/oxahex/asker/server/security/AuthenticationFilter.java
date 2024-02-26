@@ -13,6 +13,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import oxahex.asker.server.cache.RedisRepository;
 import oxahex.asker.server.dto.LoginDto.LoginReqDto;
 import oxahex.asker.server.dto.LoginDto.LoginResDto;
 import oxahex.asker.server.dto.TokenDto;
@@ -20,6 +21,7 @@ import oxahex.asker.server.error.AuthException;
 import oxahex.asker.server.service.JwtTokenService;
 import oxahex.asker.server.type.ErrorType;
 import oxahex.asker.server.type.JwtTokenType;
+import oxahex.asker.server.type.RedisType;
 import oxahex.asker.server.utils.ResponseUtil;
 
 @Slf4j
@@ -27,6 +29,7 @@ import oxahex.asker.server.utils.ResponseUtil;
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
 	private final ObjectMapper objectMapper;
+	private final RedisRepository redisRepository;
 
 	@Override
 	public Authentication attemptAuthentication(
@@ -72,6 +75,9 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 		// Access Token, Refresh Token 생성
 		String accessToken = JwtTokenService.create(authUser, JwtTokenType.ACCESS_TOKEN);
 		String refreshToken = JwtTokenService.create(authUser, JwtTokenType.REFRESH_TOKEN);
+
+		// Refresh Token Redis 캐싱
+		redisRepository.save(RedisType.REFRESH_TOKEN, authUser.getUsername(), refreshToken);
 
 		TokenDto tokenDto = new TokenDto(accessToken, refreshToken);
 
