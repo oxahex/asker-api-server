@@ -31,13 +31,13 @@ public class LoginDto {
 		private String name;
 		private String email;
 		private RoleType role;
-		private String token;
+		private TokenDto token;
 
-		public LoginResDto(User user, String token) {
+		public LoginResDto(User user, TokenDto tokenDto) {
 			this.name = user.getName();
 			this.email = user.getEmail();
 			this.role = user.getRole();
-			this.token = token;
+			this.token = tokenDto;
 		}
 	}
 }

@@ -15,6 +15,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import oxahex.asker.server.dto.LoginDto.LoginReqDto;
 import oxahex.asker.server.dto.LoginDto.LoginResDto;
+import oxahex.asker.server.dto.TokenDto;
 import oxahex.asker.server.error.AuthException;
 import oxahex.asker.server.service.JwtTokenService;
 import oxahex.asker.server.type.ErrorType;
@@ -68,11 +69,11 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
 		AuthUser authUser = (AuthUser) authResult.getPrincipal();
 
-		// Access Token
+		// Access Token, Refresh Token 생성
 		String accessToken = JwtTokenService.create(authUser, JwtTokenType.ACCESS_TOKEN);
-
-		// Refresh Token
 		String refreshToken = JwtTokenService.create(authUser, JwtTokenType.REFRESH_TOKEN);
+
+		TokenDto tokenDto = new TokenDto(accessToken, refreshToken);
 
 		// Token, 로그인 유저 정보 응답
 		ResponseUtil.success(
@@ -80,7 +81,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 				response,
 				HttpStatus.OK,
 				"정상적으로 로그인 되었습니다.",
-				new LoginResDto(authUser.getUser(), accessToken)
+				new LoginResDto(authUser.getUser(), tokenDto)
 		);
 	}
 

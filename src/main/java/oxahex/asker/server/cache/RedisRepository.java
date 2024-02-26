@@ -38,6 +38,21 @@ public class RedisRepository {
 	}
 
 	/**
+	 * Redis 데이터 조회
+	 *
+	 * @param key 조회할 데이터 키
+	 * @return 조회한 데이터
+	 */
+	public String get(RedisType type, String key) {
+
+		if (isExists(type.getPrefix() + key)) {
+			return (String) redisTemplate.opsForValue().get(key);
+		} else {
+			return null;
+		}
+	}
+
+	/**
 	 * Redis 데이터 존재 여부 확인
 	 *
 	 * @param key 확인하려는 데이터의 키
