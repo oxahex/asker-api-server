@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.domain.Page;
 import oxahex.asker.server.domain.ask.Ask;
 
 public class AskDto {
@@ -40,6 +41,21 @@ public class AskDto {
 			askInfo.setCreatedAt(ask.getCreatedAt());
 
 			return askInfo;
+		}
+	}
+
+	@Getter
+	@Setter
+	public static class AskListDto {
+
+		private Page<AskInfoDto> asks;
+
+		public static AskListDto of(Page<Ask> askList) {
+
+			AskListDto askListDto = new AskListDto();
+			askListDto.setAsks(askList.map(AskInfoDto::of));
+
+			return askListDto;
 		}
 	}
 }
