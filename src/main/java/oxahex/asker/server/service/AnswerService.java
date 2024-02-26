@@ -10,6 +10,7 @@ import oxahex.asker.server.domain.answer.Answer;
 import oxahex.asker.server.domain.answer.AnswerRepository;
 import oxahex.asker.server.domain.user.User;
 import oxahex.asker.server.domain.user.UserRepository;
+import oxahex.asker.server.dto.AnswerDto.AnswerInfoDto;
 import oxahex.asker.server.dto.AnswerDto.AnswerListDto;
 import oxahex.asker.server.error.ServiceException;
 import oxahex.asker.server.type.ErrorType;
@@ -39,5 +40,20 @@ public class AnswerService {
 		Page<Answer> answerList = answerRepository.findAllByUserId(userId, pageRequest);
 
 		return AnswerListDto.of(user, answerList);
+	}
+
+	/**
+	 * 특정 답변 조회
+	 *
+	 * @param answerId 조회할 답변 아이디
+	 * @return 해당 답변 정보
+	 */
+	@Transactional(readOnly = true)
+	public AnswerInfoDto getAnswer(Long answerId) {
+
+		Answer answer = answerRepository.findById(answerId)
+				.orElseThrow(() -> new ServiceException(ErrorType.ANSWER_NOT_FOUND));
+
+		return AnswerInfoDto.of(answer);
 	}
 }
