@@ -8,7 +8,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import oxahex.asker.server.domain.ask.Ask;
 import oxahex.asker.server.domain.ask.AskRepository;
+import oxahex.asker.server.dto.AskDto.AskInfoDto;
 import oxahex.asker.server.dto.AskDto.AskListDto;
+import oxahex.asker.server.error.ServiceException;
+import oxahex.asker.server.type.ErrorType;
 
 @Slf4j
 @Service
@@ -16,6 +19,23 @@ import oxahex.asker.server.dto.AskDto.AskListDto;
 public class AskService {
 
 	private final AskRepository askRepository;
+
+	/**
+	 * 유저가 확인 가능한 특정 질문 상세 조회
+	 *
+	 * @param userId 로그인 유저 아이디
+	 * @param askId  조회할 질문 아이디
+	 * @return 해당 질문 정보
+	 */
+	@Transactional(readOnly = true)
+	public AskInfoDto getAsk(Long userId, Long askId) {
+
+		// 특정 유저가 받은 특정 질문 조회
+		Ask ask = askRepository.findDispatchedAsk(askId, userId)
+				.orElseThrow(() -> new ServiceException(ErrorType.ASK_FORBIDDEN));
+
+		return AskInfoDto.of(ask);
+	}
 
 	/**
 	 * 유저가 확인 가능한 질문 목록 조회
