@@ -62,7 +62,7 @@ public class DispatchService {
 
 		// 전송 내역 생성
 		Dispatch dispatch = dispatchRepository.save(Dispatch.builder()
-				.answerUser(targetUser)
+				.receiveUser(targetUser)
 				.ask(ask)
 				.build());
 
