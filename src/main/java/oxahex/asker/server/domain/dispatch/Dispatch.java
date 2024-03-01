@@ -33,13 +33,13 @@ public class Dispatch {
 	private Ask ask;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "answer_user_id")
-	private User answerUser;
+	@JoinColumn(name = "receive_user_id")
+	private User receiveUser;
 
 	@Builder
-	public Dispatch(Long id, Ask ask, User answerUser) {
+	public Dispatch(Long id, Ask ask, User receiveUser) {
 		this.id = id;
 		this.ask = ask;
-		this.answerUser = answerUser;
+		this.receiveUser = receiveUser;
 	}
 }

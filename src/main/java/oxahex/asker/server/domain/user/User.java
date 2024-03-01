@@ -49,7 +49,7 @@ public class User {
 	@Column(name = "role", nullable = false, length = 10)
 	private RoleType role;
 
-	@OneToMany(mappedBy = "answerUser")
+	@OneToMany(mappedBy = "receiveUser")
 	private List<Dispatch> dispatches = new ArrayList<>();
 
 	@OneToMany(mappedBy = "askUser")
