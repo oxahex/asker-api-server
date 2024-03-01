@@ -11,8 +11,8 @@ public enum ErrorType {
 	// 인증/인가
 	AUTHENTICATION_FAILURE(HttpStatus.UNAUTHORIZED, "인증 정보가 없거나 올바르지 않습니다."),
 	AUTHORIZATION_FAILURE(HttpStatus.FORBIDDEN, "권한이 없습니다."),
-	TOKEN_EXPIRED(HttpStatus.BAD_REQUEST, "만료된 토큰입니다."),
-	TOKEN_REISSUE_FAILURE(HttpStatus.UNAUTHORIZED, "토큰 재발급에 실패했습니다."),
+	TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "만료된 토큰입니다."),
+	TOKEN_REISSUE_FAILURE(HttpStatus.UNAUTHORIZED, "토큰 재발급에 실패했습니다. 로그인이 필요합니다."),
 
 	// 이메일
 	EMAIL_CONFLICT(HttpStatus.CONFLICT, "이미 존재하는 이메일입니다."),

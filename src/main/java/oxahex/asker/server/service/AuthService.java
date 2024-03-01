@@ -83,10 +83,10 @@ public class AuthService implements UserDetailsService {
 		String userEmail = authUser.getUsername();
 		String cachedToken = redisRepository.get(RedisType.REFRESH_TOKEN, userEmail);
 
-		// 캐시되지 않은 경우 RDB에서 Refresh Token 획득
-		String savedToken = cachedToken == null
-				? userRepository.findRefreshToken(userEmail)
-				: cachedToken;
+		// 캐시되지 않은 경우 401 -> 다시 로그인
+		if (cachedToken == null) {
+			throw new ServiceException(ErrorType.TOKEN_EXPIRED);
+		}
 
 		// 서버 측에 저장된 토큰과 동일한지 확인
 		if (!Objects.equals(refreshToken, cachedToken)) {
@@ -96,7 +96,7 @@ public class AuthService implements UserDetailsService {
 		// Access Token 재발급
 		String reissuedToken = JwtTokenService.create(authUser, JwtTokenType.ACCESS_TOKEN);
 
-		return new TokenDto(reissuedToken, savedToken);
+		return new TokenDto(reissuedToken, cachedToken);
 	}
 
 	/**
