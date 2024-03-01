@@ -8,7 +8,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -16,7 +18,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import oxahex.asker.server.cache.RedisRepository;
 import oxahex.asker.server.dto.LoginDto.LoginReqDto;
 import oxahex.asker.server.dto.LoginDto.LoginResDto;
-import oxahex.asker.server.dto.TokenDto;
 import oxahex.asker.server.error.AuthException;
 import oxahex.asker.server.service.JwtTokenService;
 import oxahex.asker.server.type.ErrorType;
@@ -79,7 +80,16 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 		// Refresh Token Redis 캐싱
 		redisRepository.save(RedisType.REFRESH_TOKEN, authUser.getUsername(), refreshToken);
 
-		TokenDto tokenDto = new TokenDto(accessToken, refreshToken);
+		// Refresh Token Set-Cookie
+		ResponseCookie cookie = ResponseCookie
+				.from("refreshToken", refreshToken)
+				.maxAge(JwtTokenType.REFRESH_TOKEN.getExpireTime())
+				.path("/api/auth/token")
+				.secure(true)
+				.sameSite("localhost")
+				.httpOnly(true)
+				.build();
+		response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
 		// Token, 로그인 유저 정보 응답
 		ResponseUtil.success(
@@ -87,7 +97,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 				response,
 				HttpStatus.OK,
 				"정상적으로 로그인 되었습니다.",
-				new LoginResDto(authUser.getUser(), tokenDto)
+				new LoginResDto(authUser.getUser(), accessToken)
 		);
 	}
 

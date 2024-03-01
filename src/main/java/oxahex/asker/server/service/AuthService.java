@@ -13,7 +13,6 @@ import oxahex.asker.server.domain.user.User;
 import oxahex.asker.server.domain.user.UserRepository;
 import oxahex.asker.server.dto.JoinDto.JoinReqDto;
 import oxahex.asker.server.dto.JoinDto.JoinResDto;
-import oxahex.asker.server.dto.TokenDto;
 import oxahex.asker.server.error.AuthException;
 import oxahex.asker.server.error.ServiceException;
 import oxahex.asker.server.security.AuthUser;
@@ -37,7 +36,7 @@ public class AuthService implements UserDetailsService {
 		log.info("[이메일 유저 인증][email={}]", username);
 		User user = userRepository.findByEmail(username)
 				.orElseThrow(() -> new AuthException(ErrorType.AUTHENTICATION_FAILURE));
-		
+
 		return new AuthUser(user);
 	}
 
@@ -73,12 +72,13 @@ public class AuthService implements UserDetailsService {
 	 * @param refreshToken Refresh Token
 	 * @return Access Token
 	 */
-	public TokenDto reIssueAccessToken(
+	public String reIssueAccessToken(
 			AuthUser authUser,
 			String refreshToken
 	) {
 
 		String userEmail = authUser.getUsername();
+		log.info(userEmail);
 		String cachedToken = redisRepository.get(RedisType.REFRESH_TOKEN, userEmail);
 
 		// 캐시되지 않은 경우 401 -> 다시 로그인
@@ -92,9 +92,7 @@ public class AuthService implements UserDetailsService {
 		}
 
 		// Access Token 재발급
-		String reissuedToken = JwtTokenService.create(authUser, JwtTokenType.ACCESS_TOKEN);
-
-		return new TokenDto(reissuedToken, cachedToken);
+		return JwtTokenService.create(authUser, JwtTokenType.ACCESS_TOKEN);
 	}
 
 	/**

@@ -45,11 +45,7 @@ public class RedisRepository {
 	 */
 	public String get(RedisType type, String key) {
 
-		if (isExists(type.getPrefix() + key)) {
-			return (String) redisTemplate.opsForValue().get(key);
-		} else {
-			return null;
-		}
+		return (String) redisTemplate.opsForValue().get(type.getPrefix() + key);
 	}
 
 	/**

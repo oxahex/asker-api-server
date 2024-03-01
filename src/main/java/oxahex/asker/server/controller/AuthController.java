@@ -6,18 +6,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import oxahex.asker.server.dto.JoinDto.JoinReqDto;
 import oxahex.asker.server.dto.JoinDto.JoinResDto;
 import oxahex.asker.server.dto.ResponseDto;
-import oxahex.asker.server.dto.TokenDto;
 import oxahex.asker.server.security.AuthUser;
 import oxahex.asker.server.service.AuthService;
+import oxahex.asker.server.service.JwtTokenService;
 
 @Slf4j
 @RestController
@@ -25,8 +24,8 @@ import oxahex.asker.server.service.AuthService;
 @RequiredArgsConstructor
 public class AuthController {
 
-	private static final String HEADER = "Authorization";
-	private static final String PREFIX = "Bearer ";
+	private static final String COOKIE_KEY = "refreshToken";
+
 	private final AuthService authService;
 
 	/**
@@ -55,23 +54,20 @@ public class AuthController {
 	 * JWT Access Token 재발급
 	 * <p> Access Token 만료 시 프론트에서 Authorization Header에 Refresh Token 전송
 	 *
-	 * @param refreshToken 헤더 Refresh Token 값
-	 * @param authUser     로그인 유저
+	 * @param refreshToken 쿠키 Refresh Token 값
 	 * @return JWT Access Token
 	 */
-	@PostMapping(path = "/token", headers = HEADER)
-	@PreAuthorize("hasAuthority('USER')")
-	public ResponseEntity<ResponseDto<TokenDto>> reIssueAccessToken(
-			@RequestHeader(HEADER) String refreshToken,
-			@AuthenticationPrincipal AuthUser authUser
+	@PostMapping(path = "/token")
+	public ResponseEntity<ResponseDto<String>> reIssueAccessToken(
+			@CookieValue(name = COOKIE_KEY) String refreshToken
 	) {
 
-		log.info("[JWT Access Token 재발급][email={}]", authUser.getUsername());
-
-		TokenDto tokenDto = authService.reIssueAccessToken(authUser, refreshToken);
+		log.info("[JWT Access Token 재발급]");
+		AuthUser authUser = JwtTokenService.verify(refreshToken);
+		String accessToken = authService.reIssueAccessToken(authUser, refreshToken);
 
 		return new ResponseEntity<>(
-				new ResponseDto<>("토큰이 정상적으로 재발급되었습니다.", tokenDto),
+				new ResponseDto<>("토큰이 정상적으로 재발급되었습니다.", accessToken),
 				HttpStatus.CREATED
 		);
 	}
