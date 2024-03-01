@@ -49,9 +49,6 @@ public class User {
 	@Column(name = "role", nullable = false, length = 10)
 	private RoleType role;
 
-	@Column(name = "jwt_token")
-	private String jwtToken;
-
 	@OneToMany(mappedBy = "answerUser")
 	private List<Dispatch> dispatches = new ArrayList<>();
 
@@ -72,19 +69,14 @@ public class User {
 			String name,
 			String email,
 			String password,
-			RoleType role,
-			String jwtToken) {
+			RoleType role
+	) {
 
 		this.id = id;
 		this.name = name;
 		this.email = email;
 		this.password = password;
 		this.role = role;
-		this.jwtToken = jwtToken;
-	}
-
-	public void setRefreshToken(String refreshToken) {
-		this.jwtToken = refreshToken;
 	}
 
 	public void setDispatch(Dispatch dispatch) {
