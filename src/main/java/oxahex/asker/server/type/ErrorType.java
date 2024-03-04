@@ -16,6 +16,8 @@ public enum ErrorType {
 
 	// 이메일
 	EMAIL_CONFLICT(HttpStatus.CONFLICT, "이미 존재하는 이메일입니다."),
+	EMAIL_CODE_EXPIRED(HttpStatus.FORBIDDEN, "이메일 인증 시간이 만료되었습니다."),
+	EMAIL_CODE_MIS_MATCH(HttpStatus.FORBIDDEN, "이메일 인증 코드가 올바르지 않습니다."),
 
 	// 유저
 	USER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 유저입니다."),
