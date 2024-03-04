@@ -24,6 +24,10 @@ public class JoinDto {
 		@Size(max = 50, message = "50자 미만의 이메일을 입력해주세요.")
 		private String email;
 
+		@NotEmpty(message = "이메일 인증 코드를 입력해주세요.")
+		@Size(min = 6, max = 6, message = "올바른 인증 코드가 아닙니다.")
+		private String code;
+
 		// 8 ~ 20
 		@NotEmpty(message = "로그인에 사용할 비밀번호를 입력해주세요.")
 		@Size(min = 8, max = 20, message = "최소 8글자, 최대 20글자의 비밀번호를 입력해주세요.")

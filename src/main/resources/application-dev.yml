@@ -23,6 +23,17 @@ spring:
   output:
     ansi:
       enabled: always
+  mail:
+    host: smtp.gmail.com
+    port: ${SMTP_PORT}
+    username: ${SMTP_USER_NAME}
+    password: ${SMTP_KEY}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
   data:
     redis:

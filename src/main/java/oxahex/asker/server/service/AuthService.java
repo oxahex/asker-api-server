@@ -20,12 +20,14 @@ import oxahex.asker.server.type.ErrorType;
 import oxahex.asker.server.type.JwtTokenType;
 import oxahex.asker.server.type.RedisType;
 import oxahex.asker.server.type.RoleType;
+import oxahex.asker.server.utils.RandomCodeUtil;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthService implements UserDetailsService {
 
+	private final MailService mailService;
 	private final UserRepository userRepository;
 	private final RedisRepository redisRepository;
 	private final PasswordEncoder passwordEncoder;
@@ -52,8 +54,9 @@ public class AuthService implements UserDetailsService {
 
 		log.info("[유저 생성][email={}]", joinReqDto.getEmail());
 
-		// 유저 생성 시 이메일 중복 검증
-		validateEmail(joinReqDto.getEmail());
+		// 이메일 인증 코드 확인
+		String cachedCode = redisRepository.get(RedisType.EMAIL_CODE, joinReqDto.getEmail());
+		validateCode(joinReqDto.getCode(), cachedCode);
 
 		User user = userRepository.save(User.builder()
 				.name(joinReqDto.getName())
@@ -63,6 +66,24 @@ public class AuthService implements UserDetailsService {
 				.build());
 
 		return new JoinResDto(user);
+	}
+
+	/**
+	 * 이메일 중복 검증 및 인증 코드 전송
+	 *
+	 * @param email 회원가입 요청 이메일
+	 */
+	public void sendEmailCode(String email) {
+
+		log.info("[이메일 중복 확인][{}]", email);
+		validateEmail(email);
+
+		log.info("[이메일 코드 전송][{}]", email);
+		String code = RandomCodeUtil.generateCode();
+		mailService.sendEmail(email, "회원가입 인증 코드입니다.", code);
+
+		log.info("[이메일 코드 Redis 캐싱]");
+		redisRepository.save(RedisType.EMAIL_CODE, email, code);
 	}
 
 	/**
@@ -103,6 +124,22 @@ public class AuthService implements UserDetailsService {
 	private void validateEmail(String email) {
 		if (userRepository.existsByEmail(email)) {
 			throw new ServiceException(ErrorType.EMAIL_CONFLICT);
+		}
+	}
+
+	/**
+	 * 이메일 인증 코드 유효성 검증
+	 *
+	 * @param code       유저 요청 인증 코드
+	 * @param cachedCode 캐시된 인증 코드
+	 */
+	private void validateCode(String code, String cachedCode) {
+
+		if (cachedCode == null) {
+			throw new ServiceException(ErrorType.EMAIL_CODE_EXPIRED);
+		}
+		if (!Objects.equals(cachedCode, code)) {
+			throw new ServiceException(ErrorType.EMAIL_CODE_MIS_MATCH);
 		}
 	}
 }
