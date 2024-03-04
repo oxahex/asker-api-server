@@ -35,7 +35,7 @@ public class AuthController {
 	 * @param joinReqDto 이메일 회원가입 요청 Body
 	 * @return 회원가입 유저 정보
 	 */
-	@PostMapping("/join")
+	@PostMapping("/join/email")
 	@PreAuthorize("permitAll()")
 	public ResponseEntity<ResponseDto<JoinResDto>> joinWithEmail(
 			@RequestBody @Valid JoinReqDto joinReqDto
