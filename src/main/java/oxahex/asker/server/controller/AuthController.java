@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import oxahex.asker.server.dto.EmailDto;
 import oxahex.asker.server.dto.JoinDto.JoinReqDto;
 import oxahex.asker.server.dto.JoinDto.JoinResDto;
 import oxahex.asker.server.dto.ResponseDto;
@@ -53,20 +54,20 @@ public class AuthController {
 	/**
 	 * 이메일 사전 검증 및 인증 코드 발송
 	 *
-	 * @param email 가입 요청 이메일
+	 * @param emailDto 가입 요청 이메일
 	 * @return 발송 결과
 	 */
-	@PostMapping("/email/code")
+	@PostMapping("/email/check")
 	@PreAuthorize("permitAll()")
-	public ResponseEntity<ResponseDto<?>> preCheckEmail(
-			@RequestBody String email
+	public ResponseEntity<ResponseDto<String>> preCheckEmail(
+			@RequestBody EmailDto emailDto
 	) {
 
-		log.info("[이메일 사전 확인][email={}]", email);
-		authService.sendEmailCode(email);
+		log.info("[이메일 사전 확인]");
+		String email = authService.sendEmailCode(emailDto);
 
 		return new ResponseEntity<>(
-				new ResponseDto<>("이메일 코드가 전송되었습니다.", null),
+				new ResponseDto<>("이메일 코드가 전송되었습니다.", email),
 				HttpStatus.OK
 		);
 	}

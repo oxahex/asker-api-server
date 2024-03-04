@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import oxahex.asker.server.cache.RedisRepository;
 import oxahex.asker.server.domain.user.User;
 import oxahex.asker.server.domain.user.UserRepository;
+import oxahex.asker.server.dto.EmailDto;
 import oxahex.asker.server.dto.JoinDto.JoinReqDto;
 import oxahex.asker.server.dto.JoinDto.JoinResDto;
 import oxahex.asker.server.error.AuthException;
@@ -69,21 +70,26 @@ public class AuthService implements UserDetailsService {
 	}
 
 	/**
-	 * 이메일 중복 검증 및 인증 코드 전송
+	 * 이메일 사전 중복 검증 및 인증 코드 발송
 	 *
-	 * @param email 회원가입 요청 이메일
+	 * @param emailDto 요청 이메일
+	 * @return 요청 이메일
 	 */
-	public void sendEmailCode(String email) {
+	public String sendEmailCode(EmailDto emailDto) {
+
+		String email = emailDto.getEmail();
 
 		log.info("[이메일 중복 확인][{}]", email);
 		validateEmail(email);
 
-		log.info("[이메일 코드 전송][{}]", email);
+		log.info("[이메일 코드 전송]");
 		String code = RandomCodeUtil.generateCode();
 		mailService.sendEmail(email, "회원가입 인증 코드입니다.", code);
 
 		log.info("[이메일 코드 Redis 캐싱]");
 		redisRepository.save(RedisType.EMAIL_CODE, email, code);
+
+		return email;
 	}
 
 	/**
