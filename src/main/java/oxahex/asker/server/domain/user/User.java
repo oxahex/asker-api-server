@@ -22,6 +22,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import oxahex.asker.server.domain.ask.Ask;
 import oxahex.asker.server.domain.dispatch.Dispatch;
+import oxahex.asker.server.type.ProviderType;
 import oxahex.asker.server.type.RoleType;
 
 @Entity
@@ -44,6 +45,10 @@ public class User {
 
 	@Column(name = "password", nullable = false, length = 100)
 	private String password;
+
+	@Enumerated(EnumType.STRING)
+	@Column(name = "provider", nullable = false)
+	private ProviderType provider;
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "role", nullable = false, length = 10)
