@@ -19,7 +19,8 @@ spring:
       hibernate:
         default_batch_fetch_size: 100
         format_sql: true
-      show_sql: true
+        show_sql: true
+        use_sql_comments: true
   output:
     ansi:
       enabled: always
