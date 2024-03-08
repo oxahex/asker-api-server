@@ -2,21 +2,50 @@ package oxahex.asker.server.security;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import oxahex.asker.server.domain.user.User;
 
 @Getter
 @RequiredArgsConstructor
-public class AuthUser implements UserDetails {
+public class AuthUser implements UserDetails, OAuth2User {
 
 	private User user;
+	private Map<String, Object> attributes;
 
+	/**
+	 * Email User 생성
+	 *
+	 * @param user 저장된 유저
+	 */
 	public AuthUser(User user) {
 		this.user = user;
+	}
+
+	/**
+	 * OAuth User 생성
+	 *
+	 * @param user       저장된 유저
+	 * @param attributes OAuth Attributes
+	 */
+	public AuthUser(User user, Map<String, Object> attributes) {
+		this.user = user;
+		this.attributes = attributes;
+	}
+
+	@Override
+	public Map<String, Object> getAttributes() {
+		return this.attributes;
+	}
+
+	@Override
+	public String getName() {
+		return this.user.getName();
 	}
 
 	@Override

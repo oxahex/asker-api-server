@@ -16,6 +16,8 @@ import org.springframework.security.config.annotation.web.configurers.HeadersCon
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -24,7 +26,10 @@ import oxahex.asker.server.error.handler.AuthenticationExceptionHandler;
 import oxahex.asker.server.error.handler.AuthorizationExceptionHandler;
 import oxahex.asker.server.security.AuthenticationFilter;
 import oxahex.asker.server.security.AuthorizationFilter;
+import oxahex.asker.server.security.OAuthFailureHandler;
+import oxahex.asker.server.security.OAuthSuccessHandler;
 import oxahex.asker.server.service.AuthService;
+import oxahex.asker.server.service.OAuthService;
 
 @Slf4j
 @Configuration
@@ -37,6 +42,7 @@ public class SecurityConfig {
 	private final PasswordEncoder passwordEncoder;
 	private final ObjectMapper objectMapper;
 	private final AuthService authService;
+	private final OAuthService oAuthService;
 	private final RedisRepository redisRepository;
 
 	@Bean
@@ -61,6 +67,13 @@ public class SecurityConfig {
 		// 인증, 인가 처리 필터 등록
 		http.addFilter(authenticationFilter());  // 이메일 패스워드 기반 인증 처리
 		http.addFilterBefore(authorizationFilter(), AuthenticationFilter.class);  // JWT 토큰 기반 인가 처리
+
+		// OAuth
+		http.oauth2Login(configure -> {
+			configure.userInfoEndpoint(endPoint -> endPoint.userService(oAuthService));
+			configure.successHandler(oAuthSuccessHandler());
+			configure.failureHandler(oAuthFailureHandler());
+		});
 
 		// Security Filter 내 기본 예외 처리
 		http
@@ -110,5 +123,15 @@ public class SecurityConfig {
 	@Bean
 	public AuthorizationFilter authorizationFilter() {
 		return new AuthorizationFilter(objectMapper);
+	}
+
+	@Bean
+	AuthenticationSuccessHandler oAuthSuccessHandler() {
+		return new OAuthSuccessHandler(redisRepository, objectMapper);
+	}
+
+	@Bean
+	AuthenticationFailureHandler oAuthFailureHandler() {
+		return new OAuthFailureHandler(objectMapper);
 	}
 }

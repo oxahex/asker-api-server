@@ -19,6 +19,7 @@ import oxahex.asker.server.error.ServiceException;
 import oxahex.asker.server.security.AuthUser;
 import oxahex.asker.server.type.ErrorType;
 import oxahex.asker.server.type.JwtTokenType;
+import oxahex.asker.server.type.ProviderType;
 import oxahex.asker.server.type.RedisType;
 import oxahex.asker.server.type.RoleType;
 import oxahex.asker.server.utils.RandomCodeUtil;
@@ -64,6 +65,7 @@ public class AuthService implements UserDetailsService {
 				.email(joinReqDto.getEmail())
 				.password(passwordEncoder.encode(joinReqDto.getPassword()))
 				.role(RoleType.USER)
+				.providerType((ProviderType.EMAIL))
 				.build());
 
 		return new JoinResDto(user);

@@ -14,6 +14,10 @@ public enum ErrorType {
 	TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "만료된 토큰입니다."),
 	TOKEN_REISSUE_FAILURE(HttpStatus.UNAUTHORIZED, "토큰 재발급에 실패했습니다. 로그인이 필요합니다."),
 
+	// OAuth
+	PROVIDER_INVALID(HttpStatus.BAD_REQUEST, "올바른 프로바이더가 아닙니다."),
+	OAUTH_EMAIL_CONFLICT(HttpStatus.BAD_REQUEST, "가입된 이메일입니다. 이메일로 로그인해주세요."),
+
 	// 이메일
 	EMAIL_CONFLICT(HttpStatus.CONFLICT, "이미 존재하는 이메일입니다."),
 	EMAIL_CODE_EXPIRED(HttpStatus.FORBIDDEN, "이메일 인증 시간이 만료되었습니다."),

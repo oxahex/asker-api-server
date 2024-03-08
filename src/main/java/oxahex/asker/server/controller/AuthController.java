@@ -1,23 +1,30 @@
 package oxahex.asker.server.controller;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import oxahex.asker.server.dto.EmailDto;
 import oxahex.asker.server.dto.JoinDto.JoinReqDto;
 import oxahex.asker.server.dto.JoinDto.JoinResDto;
 import oxahex.asker.server.dto.ResponseDto;
+import oxahex.asker.server.error.ServiceException;
 import oxahex.asker.server.security.AuthUser;
 import oxahex.asker.server.service.AuthService;
 import oxahex.asker.server.service.JwtTokenService;
+import oxahex.asker.server.type.ErrorType;
+import oxahex.asker.server.type.ProviderType;
 
 @Slf4j
 @RestController
@@ -70,6 +77,20 @@ public class AuthController {
 				new ResponseDto<>("이메일 코드가 전송되었습니다.", email),
 				HttpStatus.OK
 		);
+	}
+
+	@GetMapping("/oauth")
+	@PreAuthorize("permitAll()")
+	public void joinWithOAuth(
+			HttpServletResponse response,
+			@RequestParam ProviderType provider
+	) throws IOException {
+
+		switch (provider) {
+			case GOOGLE -> response.sendRedirect("/oauth2/authorization/google");
+			case TWITTER -> response.sendRedirect("https://accounts.google.com/o/oauth2/v2/authd");
+			default -> throw new ServiceException(ErrorType.PROVIDER_INVALID);
+		}
 	}
 
 	/**
