@@ -35,10 +35,10 @@ public class OAuthService extends DefaultOAuth2UserService {
 
 		String email = oAuth2User.getAttribute("email");
 
-		// 해당 이메일로 가입된 유저가 없으면 새 유저 생성
 		// 해당 provider로 가입된 유저인 경우 해당 유저 반환
+		// 해당 이메일로 가입된 유저가 없으면 새 유저 생성
 		User user = userRepository.findOAuthUser(email, providerType)
-				.orElse(createOAuthUser(oAuth2User, providerType));
+				.orElseGet(() -> createOAuthUser(oAuth2User, providerType));
 
 		return new AuthUser(user, oAuth2User.getAttributes());
 	}
