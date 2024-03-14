@@ -7,7 +7,7 @@ on:
 env:
   AWS_REGION: ap-northeast-2
   EB_APPLICATION_NAME: asker-server
-  EB_ENVIRONMENT_NAME: asker-server-prod-env
+  EB_ENVIRONMENT_NAME: asker-server-env
 
 permissions:
   contents: read
