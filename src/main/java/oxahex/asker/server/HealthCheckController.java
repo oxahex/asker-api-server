@@ -10,7 +10,7 @@ public class HealthCheckController {
 
 	@GetMapping
 	public String healthCheck() {
-		return "Asker Server is up and running...";
+		return "Asker Server is Up and Running...";
 	}
 
 }
