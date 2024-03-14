@@ -44,7 +44,7 @@ jobs:
           utcOffset: "+09:00"
 
       # JAR(application.jar) to ZIP for Beanstalk
-      # ZIP File encludes Procfile, .ebextensions, .playform
+      # ZIP File encludes Procfile, .ebextensions, .platform
       - name: Generate Deployment Package
         run: |
           mkdir -p deploy
