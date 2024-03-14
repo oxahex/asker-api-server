@@ -60,6 +60,7 @@ public class SecurityConfig {
 		// Path Level 진입 제안
 		http
 				.authorizeHttpRequests(request -> {
+					request.requestMatchers("/").permitAll();        // for EB Health Check
 					request.requestMatchers("/api/**").permitAll();
 					request.anyRequest().authenticated();
 				});
