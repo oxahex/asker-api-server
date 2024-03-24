@@ -57,10 +57,25 @@ spring:
     key: ${JWT_KEY}
 
   elasticsearch:
-    uris: "http://${ELASTIC_HOST}:${ELASTIC_PORT}"
+    uris: ${ES_URL}
+    username: ${ES_USER_NAME}
+    password: ${ES_PASSWORD}
 
 
 
 logging:
   level:
     '[oxahex.asker.server]': DEBUG
+    org:
+      springframework:
+        transaction:
+          interceptor: debug
+        jdbc:
+          datasource: debug
+        orm:
+          jpa:
+            JpaTransactionManager: debug
+        hibernate:
+          resource:
+            transaction: debug
+
