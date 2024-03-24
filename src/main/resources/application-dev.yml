@@ -64,3 +64,16 @@ spring:
 logging:
   level:
     '[oxahex.asker.server]': DEBUG
+    org:
+      springframework:
+        transaction:
+          interceptor: debug
+        jdbc:
+          datasource: debug
+        orm:
+          jpa:
+            JpaTransactionManager: debug
+        hibernate:
+          resource:
+            transaction: debug
+
