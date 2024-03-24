@@ -1,4 +1,4 @@
-package oxahex.asker.server.service;
+package oxahex.asker.server.domain.auth;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;

@@ -12,7 +12,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
-import oxahex.asker.server.service.JwtTokenService;
+import oxahex.asker.server.domain.auth.JwtTokenService;
 
 @Slf4j
 @RequiredArgsConstructor

@@ -1,4 +1,4 @@
-package oxahex.asker.server.service;
+package oxahex.asker.server.domain.dispatch;
 
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -9,8 +9,6 @@ import oxahex.asker.server.domain.answer.Answer;
 import oxahex.asker.server.domain.answer.AnswerRepository;
 import oxahex.asker.server.domain.ask.Ask;
 import oxahex.asker.server.domain.ask.AskRepository;
-import oxahex.asker.server.domain.dispatch.Dispatch;
-import oxahex.asker.server.domain.dispatch.DispatchRepository;
 import oxahex.asker.server.domain.user.User;
 import oxahex.asker.server.domain.user.UserRepository;
 import oxahex.asker.server.dto.AnswerDto.AnswerInfoDto;

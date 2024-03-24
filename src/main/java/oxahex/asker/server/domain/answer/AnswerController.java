@@ -1,4 +1,4 @@
-package oxahex.asker.server.controller;
+package oxahex.asker.server.domain.answer;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import oxahex.asker.server.dto.AnswerDto.AnswerInfoDto;
 import oxahex.asker.server.dto.AnswerDto.AnswerListDto;
 import oxahex.asker.server.dto.ResponseDto;
-import oxahex.asker.server.service.AnswerService;
 import oxahex.asker.server.type.SortType;
 
 @Slf4j

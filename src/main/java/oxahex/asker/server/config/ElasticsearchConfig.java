@@ -15,7 +15,7 @@ public class ElasticsearchConfig extends ElasticsearchConfiguration {
 	@Value("${spring.elasticsearch.uris}")
 	private String uris;
 
-	@Value("${spring.elasticsearch.user.name}")
+	@Value("${spring.elasticsearch.username}")
 	private String username;
 
 	@Value("${spring.elasticsearch.password}")

@@ -22,14 +22,14 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import oxahex.asker.server.cache.RedisRepository;
+import oxahex.asker.server.domain.auth.AuthService;
+import oxahex.asker.server.domain.auth.OAuthService;
 import oxahex.asker.server.error.handler.AuthenticationExceptionHandler;
 import oxahex.asker.server.error.handler.AuthorizationExceptionHandler;
 import oxahex.asker.server.security.AuthenticationFilter;
 import oxahex.asker.server.security.AuthorizationFilter;
 import oxahex.asker.server.security.OAuthFailureHandler;
 import oxahex.asker.server.security.OAuthSuccessHandler;
-import oxahex.asker.server.service.AuthService;
-import oxahex.asker.server.service.OAuthService;
 
 @Slf4j
 @Configuration

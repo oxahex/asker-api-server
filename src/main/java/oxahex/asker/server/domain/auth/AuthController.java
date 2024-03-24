@@ -1,4 +1,4 @@
-package oxahex.asker.server.controller;
+package oxahex.asker.server.domain.auth;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -21,8 +21,6 @@ import oxahex.asker.server.dto.JoinDto.JoinResDto;
 import oxahex.asker.server.dto.ResponseDto;
 import oxahex.asker.server.error.ServiceException;
 import oxahex.asker.server.security.AuthUser;
-import oxahex.asker.server.service.AuthService;
-import oxahex.asker.server.service.JwtTokenService;
 import oxahex.asker.server.type.ErrorType;
 import oxahex.asker.server.type.ProviderType;
 

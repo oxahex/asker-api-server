@@ -1,4 +1,4 @@
-package oxahex.asker.server.service;
+package oxahex.asker.server.domain.auth;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

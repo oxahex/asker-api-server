@@ -1,4 +1,4 @@
-package oxahex.asker.server.controller;
+package oxahex.asker.server.domain.dispatch;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,6 @@ import oxahex.asker.server.dto.AskDto.AskInfoDto;
 import oxahex.asker.server.dto.AskDto.AskReqDto;
 import oxahex.asker.server.dto.ResponseDto;
 import oxahex.asker.server.security.AuthUser;
-import oxahex.asker.server.service.DispatchService;
 
 @Slf4j
 @RestController

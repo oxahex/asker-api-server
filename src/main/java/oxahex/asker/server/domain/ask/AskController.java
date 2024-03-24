@@ -1,4 +1,4 @@
-package oxahex.asker.server.controller;
+package oxahex.asker.server.domain.ask;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +17,6 @@ import oxahex.asker.server.dto.AskDto.AskInfoDto;
 import oxahex.asker.server.dto.AskDto.AskListDto;
 import oxahex.asker.server.dto.ResponseDto;
 import oxahex.asker.server.security.AuthUser;
-import oxahex.asker.server.service.AskService;
 import oxahex.asker.server.type.SortType;
 
 @Slf4j
