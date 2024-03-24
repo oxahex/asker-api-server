@@ -57,7 +57,9 @@ spring:
     key: ${JWT_KEY}
 
   elasticsearch:
-    uris: "http://${ELASTIC_HOST}:${ELASTIC_PORT}"
+    uris: ${ES_URL}
+    username: ${ES_USER_NAME}
+    password: ${ES_PASSWORD}
 
 
 

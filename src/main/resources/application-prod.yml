@@ -52,8 +52,10 @@ spring:
   jwt:
     key: ${jwt.key}
 
-#  elasticsearch:
-#    uris: "http://${ELASTIC_HOST}:${ELASTIC_PORT}"
+  elasticsearch:
+    uris: ${es.url}
+    username: ${es.username}
+    password: ${es.password}
 
 
 
