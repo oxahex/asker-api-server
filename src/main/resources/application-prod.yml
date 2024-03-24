@@ -54,7 +54,7 @@ spring:
 
   elasticsearch:
     uris: ${es.url}
-    username: ${es.username}
+    username: ${es.user.name}
     password: ${es.password}
 
 
